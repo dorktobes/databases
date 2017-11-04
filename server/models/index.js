@@ -8,7 +8,6 @@ module.exports = {
         if (err) {
           throw err;
         } else {
-          console.log(results);
           callback(results);
         }
       });
@@ -27,21 +26,29 @@ module.exports = {
       { username: 'pakistani denzel',
         text: 'hi there',
         roomname: 'lobby' }
-      */var roomCheck;
-      db.connection.query(`SELECT id FROM users WHERE user_name = '${body.username}'`, function(err, results) {
+      */
+      console.log('outside of query', body.roomname);
+      db.connection.query(`SELECT id FROM rooms WHERE room_name = '${body.roomname}'`, function(err, results) {
         if (err) {
           throw err;
         } else {
-          if (results.length) {
-            var userID = results[0].id;
-                        
+          console.log('inside of first else', results);
+          if (!results.length) {
+            db.connection.query(`INSERT INTO rooms (room_name) VALUES ('${body.roomname}')`, function(err, results) {
+              if (err) {
+                throw err;
+              } else {
+                console.log('WE INSERTED A ROOMNAME', results.insertId);
+              }
+            });
           }
+          //insert whole message
+          db.connection.query(`INSERT INTO messages (message, room, user) 
+            SELECT id FROM rooms WHERE room_name = '${body.roomname}' 
+            SELECT id FROM users WHERE user_name = '${body.username}')`);
         }
+        
       });
-      
-      db.connection.query();
-      
-      console.log('inside of model', body);
       /*
       { message: 'hello world',
         user: 'fred'--> 5, 

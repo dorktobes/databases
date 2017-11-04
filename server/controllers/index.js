@@ -10,7 +10,6 @@ module.exports = {
   },
   messages: {
     get: function (req, res) {
-      console.log('hello from controller get');
       res.writeHead(200, this.headers);
       models.messages.get(function (results) {
         res.end(JSON.stringify(results));
