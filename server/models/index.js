@@ -32,7 +32,9 @@ module.exports = {
         if (err) {
           throw err;
         } else {
-          var roomID = results[0].room_id;
+          if (results.length) {
+            var roomID = results[0].room_id;
+          }
           console.log('inside of first else', results);
           if (!results.length) {
             db.connection.query(`INSERT INTO rooms (room_name) VALUES ('${body.roomname}')`, function(err, results) {
