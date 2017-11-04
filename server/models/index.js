@@ -3,14 +3,15 @@ var db = require('../db');
 
 module.exports = {
   messages: {
-    get: function () {
-      // db.connection.query('SELECT * FROM messages', function(err, results) {
-      //   if (err) {
-      //     throw err;
-      //   } else {
-      //     console.log('results:', results);
-      //   }
-      // });
+    get: function (callback) {
+      db.connection.query('SELECT * FROM messages', function(err, results) {
+        if (err) {
+          throw err;
+        } else {
+          console.log(results);
+          callback(results);
+        }
+      });
       //query all messages from database
         //messages will be deconstruced
         /*

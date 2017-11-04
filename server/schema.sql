@@ -27,8 +27,9 @@ CREATE TABLE messages (
 
 /* Create other tables and define schemas for them here! */
 
-
-
+INSERT INTO rooms (room_name) VALUES('lobby');
+INSERT INTO users (user_name) VALUES('fred');
+INSERT INTO messages (message, room, user) VALUES('hello', 1, 1);
 
 
 /*  Execute this file from the command line by typing:
