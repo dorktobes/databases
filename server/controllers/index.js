@@ -27,7 +27,9 @@ module.exports = {
         bodyArr = body.split('%20');
         body = bodyArr.join(' ');
         //body is still stingified
-        models.messages.post(body);
+        models.messages.post(body, function(data) {
+          res.end(JSON.stringify(data));
+        });
       });
       console.log('hello from post');
     } // a function which handles posting a message to the database

@@ -20,7 +20,7 @@ module.exports = {
         room: 2},
         */
     }, // a function which produces all the messages
-    post: function (body) {
+    post: function (body, cb) {
       body = JSON.parse(body);
       /*
       { username: 'pakistani denzel',
@@ -32,6 +32,7 @@ module.exports = {
         if (err) {
           throw err;
         } else {
+          var roomID = results[0].id;
           console.log('inside of first else', results);
           if (!results.length) {
             db.connection.query(`INSERT INTO rooms (room_name) VALUES ('${body.roomname}')`, function(err, results) {
@@ -39,13 +40,28 @@ module.exports = {
                 throw err;
               } else {
                 console.log('WE INSERTED A ROOMNAME', results.insertId);
+                roomID = results.insertId;
               }
             });
           }
-          //insert whole message
-          db.connection.query(`INSERT INTO messages (message, room, user) 
-            SELECT id FROM rooms WHERE room_name = '${body.roomname}' 
-            SELECT id FROM users WHERE user_name = '${body.username}')`);
+          db.connection.query(`SELECT id FROM users WHERE user_name = '${body.username}'`, function(err, userResults) {
+            if (err) {
+              throw err;
+            } else {
+              console.log(userResults);
+              var params = [body.text, userResults[0].id, roomID];
+              console.log(params);
+              db.connection.query(`INSERT INTO messages (message, user, room) VALUES ('${params[0]}', ${params[1]}, ${params[2]});`, function (err, data) {
+                if (err) {
+                  throw err;
+                } else {
+                  console.log('POSTED A MESSAGE', data);
+                  cb(data);
+                }
+              });
+              
+            }
+          }); 
         }
         
       });
