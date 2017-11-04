@@ -4,7 +4,7 @@ var db = require('../db');
 module.exports = {
   messages: {
     get: function (callback) {
-      db.connection.query('SELECT message, room_name, user_name FROM messages INNER JOIN rooms ON messages.room = rooms.id INNER JOIN users ON users.id = messages.user', function(err, results) {
+      db.connection.query('SELECT * FROM messages INNER JOIN rooms ON messages.room = rooms.room_id INNER JOIN users ON users.user_id = messages.user', function(err, results) {
         if (err) {
           throw err;
         } else {
@@ -28,11 +28,11 @@ module.exports = {
         roomname: 'lobby' }
       */
       console.log('outside of query', body.roomname);
-      db.connection.query(`SELECT id FROM rooms WHERE room_name = '${body.roomname}'`, function(err, results) {
+      db.connection.query(`SELECT room_id FROM rooms WHERE room_name = '${body.roomname}'`, function(err, results) {
         if (err) {
           throw err;
         } else {
-          var roomID = results[0].id;
+          var roomID = results[0].room_id;
           console.log('inside of first else', results);
           if (!results.length) {
             db.connection.query(`INSERT INTO rooms (room_name) VALUES ('${body.roomname}')`, function(err, results) {
@@ -44,12 +44,12 @@ module.exports = {
               }
             });
           }
-          db.connection.query(`SELECT id FROM users WHERE user_name = '${body.username}'`, function(err, userResults) {
+          db.connection.query(`SELECT user_id FROM users WHERE user_name = '${body.username}'`, function(err, userResults) {
             if (err) {
               throw err;
             } else {
               console.log(userResults);
-              var params = [body.text, userResults[0].id, roomID];
+              var params = [body.text, userResults[0].user_id, roomID];
               console.log(params);
               db.connection.query(`INSERT INTO messages (message, user, room) VALUES ('${params[0]}', ${params[1]}, ${params[2]});`, function (err, data) {
                 if (err) {
@@ -80,7 +80,7 @@ module.exports = {
     // Ditto as above.
     get: function () {},
     post: function (name) {
-      db.connection.query(`SELECT id FROM users WHERE user_name = '${name}'`, function(err, results) {
+      db.connection.query(`SELECT user_id FROM users WHERE user_name = '${name}'`, function(err, results) {
         if (err) {
           throw err;
         } else {
