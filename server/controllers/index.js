@@ -19,13 +19,36 @@ module.exports = {
       
       // });
     }, // a function which handles a get request for all messages
-    post: function (req, res) {} // a function which handles posting a message to the database
+    post: function (req, res) {
+      res.writeHead(201, this.headers);
+      var body = '';
+      req.on('data', function(chunk) {
+        body += chunk;
+      }).on('end', function() {
+        bodyArr = body.split('%20');
+        body = bodyArr.join(' ');
+        //body is still stingified
+        models.messages.post(body);
+      });
+      console.log('hello from post');
+    } // a function which handles posting a message to the database
   },
 
   users: {
     // Ditto as above
     get: function (req, res) {},
-    post: function (req, res) {}
+    post: function (req, res) {
+      var body = '';
+      req.on('data', function(chunk) {
+        body += chunk;
+      }).on('end', function() {
+        bodyArr = body.split('%20');
+        body = bodyArr.join(' ');
+        models.users.post(JSON.parse(body));
+        //body is still stingified
+        // models.messages.post(body);
+      });
+    }
   }
 };
 
