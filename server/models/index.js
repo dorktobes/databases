@@ -80,7 +80,11 @@ module.exports = {
 
   users: {
     // Ditto as above.
-    get: function () {},
+    get: function (callback) {
+      db.connection.query('SELECT * FROM users', function(err, results) {
+        callback(results);
+      });
+    },
     post: function (name) {
       db.connection.query(`SELECT user_id FROM users WHERE user_name = '${name}'`, function(err, results) {
         if (err) {
